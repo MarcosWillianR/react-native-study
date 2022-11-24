@@ -6,9 +6,10 @@ import { Highlight } from '@components/Highlight';
 import { GroupCard } from '@components/GroupCard';
 
 import { Container } from './styles';
+import { ListEmpty } from '@components/ListEmpty';
 
 export function Groups() {
-  const [groups, setGroups] = useState(['Galera da GanheJunto']);
+  const [groups, setGroups] = useState<string[]>([]);
 
   return (
     <Container>
@@ -20,6 +21,8 @@ export function Groups() {
         data={groups}
         keyExtractor={item => item}
         renderItem={({ item }) => <GroupCard title={item} />}
+        ListEmptyComponent={() => <ListEmpty message="Que tal cadastrar a primeira turma?" />}
+        contentContainerStyle={groups.length === 0 && { flex: 1 }}
       />
     </Container>
   );
