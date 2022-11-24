@@ -10,8 +10,6 @@ import { Loading } from '@components/Loading';
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
 
-
-
   return (
     <ThemeProvider theme={theme}>
       <StatusBar barStyle="light-content" translucent />
