@@ -1,3 +1,6 @@
+import { useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 import { Button } from '@components/Button';
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
@@ -6,6 +9,12 @@ import { Input } from '@components/Input';
 import { Container, Content, Icon } from './styles';
 
 export function NewGroup() {
+  const { navigate } = useNavigation();
+
+  const handleNew = useCallback(() => {
+    navigate('players', { group: 'Tim' });
+  }, []);
+
   return (
     <Container>
       <Header backButton />
@@ -17,7 +26,7 @@ export function NewGroup() {
 
         <Input placeholder="Nome da turma" />
 
-        <Button style={{ marginTop: 20 }}>Criar</Button>
+        <Button onPress={handleNew} style={{ marginTop: 20 }}>Criar</Button>
       </Content>
     </Container>
   )
