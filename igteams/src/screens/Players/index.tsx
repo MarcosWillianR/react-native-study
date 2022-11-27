@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { FlatList } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
 import { Input } from '@components/Input';
 import { Filter } from '@components/Filter';
@@ -12,7 +13,14 @@ import { PlayerCard } from '@components/PlayerCard';
 
 import { Container, Form, HeaderList, TotalPlayers } from './styles';
 
+type RouteParams = {
+  group: string;
+}
+
 export function Players() {
+  const route = useRoute();
+  const { group } = route.params as RouteParams;
+
   const [activeTeam, setActiveTeam] = useState('');
   const [players, setPlayers] = useState([]);
 
@@ -25,7 +33,7 @@ export function Players() {
       <Header backButton />
 
       <Highlight
-        title="Nome da turma"
+        title={group}
         subtitle="Adicione a galera e separe os times"
       />
 
