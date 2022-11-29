@@ -5,5 +5,4 @@ export class AppError {
     this.message = message;
   }
 
-
 }
