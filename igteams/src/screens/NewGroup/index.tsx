@@ -1,6 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
+import { groupCreate } from '@storage/group/groupCreate';
+
 import { Button } from '@components/Button';
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
@@ -13,8 +15,13 @@ export function NewGroup() {
 
   const [group, setGroup] = useState('');
 
-  const handleNew = useCallback(() => {
-    navigate('players', { group });
+  const handleNew = useCallback(async () => {
+    try {
+      await groupCreate(group);
+      navigate('players', { group });
+    } catch (error) {
+      console.log(error);
+    }
   }, [group]);
 
   return (
