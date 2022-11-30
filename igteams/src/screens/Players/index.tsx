@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Alert, FlatList } from 'react-native';
-import { useFocusEffect, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 import { Input } from '@components/Input';
 import { Filter } from '@components/Filter';
@@ -15,8 +15,8 @@ import { AppError } from '@utils/AppError';
 
 import { playerAddByGroup } from '@storage/player/playerAddByGroup';
 import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO';
-import { playersGetByGroup } from '@storage/player/playersGetByGroup';
 import { playerRemoveByGroup } from '@storage/player/playerRemoveByGroup';
+import { playersGetByGroupAndTeam } from '@storage/player/playersGetByGroupAndTeam';
 
 import { Container, Form, HeaderList, TotalPlayers } from './styles';
 
@@ -32,20 +32,20 @@ export function Players() {
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
   const [newPlayerName, setNewPlayerName] = useState('');
 
-  const handleGetPlayersByGroup = useCallback(async () => {
+  const handleGetPlayersByTeam = useCallback(async () => {
     try {
-      const data = await playersGetByGroup(group);
+      const data = await playersGetByGroupAndTeam(group, activeTeam);
       setPlayers(data);
     } catch (error) {
       console.log(error);
     }
-  }, [group]);
+  }, [group, activeTeam]);
 
   const handleRemovePlayer = useCallback(async (playerName: string) => {
     const newPlayer: PlayerStorageDTO = { name: playerName, team: activeTeam }
     await playerRemoveByGroup(newPlayer, group);
-    await handleGetPlayersByGroup();
-  }, [activeTeam, handleGetPlayersByGroup]);
+    await handleGetPlayersByTeam();
+  }, [activeTeam, handleGetPlayersByTeam]);
 
   const handleAddPlayer = useCallback(async () => {
     try {
@@ -54,7 +54,7 @@ export function Players() {
       }
       const newPlayer: PlayerStorageDTO = { name: newPlayerName, team: activeTeam }
       await playerAddByGroup(newPlayer, group)
-      await handleGetPlayersByGroup();
+      await handleGetPlayersByTeam();
       setNewPlayerName('');
     } catch (error) {
       if (error instanceof AppError) {
@@ -66,13 +66,9 @@ export function Players() {
     }
   }, [newPlayerName, activeTeam, group]);
 
-  const filteredPlayersByGroup = useMemo(() => {
-    return players.filter(player => player.team === activeTeam);
-  }, [players, activeTeam]);
-
-  useFocusEffect(useCallback(() => {
-    handleGetPlayersByGroup();
-  }, []));
+  useEffect(() => {
+    handleGetPlayersByTeam();
+  }, [activeTeam]);
 
   return (
     <Container>
@@ -107,18 +103,18 @@ export function Players() {
             />
           )}
         />
-        <TotalPlayers>{filteredPlayersByGroup.length}</TotalPlayers>
+        <TotalPlayers>{players.length}</TotalPlayers>
       </HeaderList>
 
       <FlatList
-        data={filteredPlayersByGroup}
+        data={players}
         keyExtractor={item => item.name}
         renderItem={({ item }) => <PlayerCard name={item.name} onRemove={handleRemovePlayer} />}
         ListEmptyComponent={() => <ListEmpty message="Não há pessoas nesse time" />}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           { paddingBottom: 100 },
-          filteredPlayersByGroup.length === 0 && { flex: 1 }
+          players.length === 0 && { flex: 1 }
         ]}
       />
 
