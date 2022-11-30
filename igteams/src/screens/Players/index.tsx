@@ -44,8 +44,7 @@ export function Players() {
   }, [group, activeTeam]);
 
   const handleRemovePlayer = useCallback(async (playerName: string) => {
-    const newPlayer: PlayerStorageDTO = { name: playerName, team: activeTeam }
-    await playerRemoveByGroup(newPlayer, group);
+    await playerRemoveByGroup(playerName, group);
     await handleGetPlayersByTeam();
   }, [activeTeam, handleGetPlayersByTeam]);
 
