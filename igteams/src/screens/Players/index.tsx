@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import { Alert, FlatList } from 'react-native';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { Alert, FlatList, TextInput } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 import { Input } from '@components/Input';
@@ -30,7 +30,9 @@ export function Players() {
 
   const [activeTeam, setActiveTeam] = useState('Time A');
   const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
+
   const [newPlayerName, setNewPlayerName] = useState('');
+  const inputRef = useRef<TextInput>(null);
 
   const handleGetPlayersByTeam = useCallback(async () => {
     try {
@@ -54,8 +56,9 @@ export function Players() {
       }
       const newPlayer: PlayerStorageDTO = { name: newPlayerName, team: activeTeam }
       await playerAddByGroup(newPlayer, group)
-      await handleGetPlayersByTeam();
+      inputRef.current?.blur();
       setNewPlayerName('');
+      await handleGetPlayersByTeam();
     } catch (error) {
       if (error instanceof AppError) {
         Alert.alert('Novo Jogador', error.message)
@@ -85,6 +88,9 @@ export function Players() {
           autoCorrect={false}
           value={newPlayerName}
           onChangeText={setNewPlayerName}
+          inputRef={inputRef}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType="done"
         />
 
         <ButtonIcon icon="add" onPress={handleAddPlayer} />
