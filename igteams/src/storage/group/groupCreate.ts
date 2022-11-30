@@ -16,10 +16,7 @@ export async function groupCreate(newGroup: string) {
       throw new AppError('Já existe um grupo cadastrado com esse nome.');
     }
 
-    await AsyncStprage.setItem(
-      GROUP_COLLECTION,
-      JSON.stringify([...storedGroups, newGroup])
-    );
+    await AsyncStprage.setItem(GROUP_COLLECTION, JSON.stringify([...storedGroups, newGroup]));
   } catch (error) {
     throw error;
   }
