@@ -44,8 +44,12 @@ export function Players() {
   }, [group, activeTeam]);
 
   const handleRemovePlayer = useCallback(async (playerName: string) => {
-    await playerRemoveByGroup(playerName, group);
-    await handleGetPlayersByTeam();
+    try {
+      await playerRemoveByGroup(playerName, group);
+      await handleGetPlayersByTeam();
+    } catch (error) {
+      return Alert.alert('Jogador', 'Não foi possível remover o jogador.');
+    }
   }, [activeTeam, handleGetPlayersByTeam]);
 
   const handleAddPlayer = useCallback(async () => {
