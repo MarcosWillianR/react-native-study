@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { Center, ScrollView, VStack, Skeleton, Text, Heading } from "native-base";
+import { Center, ScrollView, VStack, Skeleton, Text, Heading, useToast } from "native-base";
 import { TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 import { ScreenHeader } from "@components/ScreenHeader";
 import { UserPhoto } from "@components/UserPhoto";
@@ -13,6 +14,8 @@ const PHOTO_SIZE = 33;
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
   const [userPhoto, setUserPhoto] = useState('https://github.com/MarcosWillianR.png');
+
+  const toast = useToast();
 
   const handleSelectUserPhoto = useCallback(async () => {
     try {
@@ -27,6 +30,16 @@ export function Profile() {
       if (selectedPhoto.canceled) return;
 
       if (selectedPhoto.assets[0].uri) {
+        const photoInfo = await FileSystem.getInfoAsync(selectedPhoto.assets[0].uri);
+
+        if (photoInfo.size && (photoInfo.size / 1024 / 1024 > 5)) {
+          return toast.show({
+            title: 'Essa imagem é muito grande. Escolha uma de até 5MB.',
+            placement: 'top',
+            bgColor: 'red.500'
+          });
+        }
+
         setUserPhoto(selectedPhoto.assets[0].uri);
       }
     } catch (error) {
