@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { HStack, Image, Input, VStack, Icon, Button, Text, Box, FlatList } from "native-base";
+import { HStack, Image, Input, VStack, Icon, Button, Text, Box, FlatList, Checkbox } from "native-base";
+import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import logoPng from '@assets/Logo.png';
@@ -58,7 +59,46 @@ export function Home() {
       <FlatList
         data={tasks}
         keyExtractor={item => item}
-        renderItem={({ item }) => <Text>{item}</Text>}
+        renderItem={({ item }) => (
+          <HStack
+            bg="gray.500"
+            p={3}
+            alignItems="center"
+            borderWidth={1}
+            borderColor="gray.400"
+            rounded="md"
+          >
+            <Checkbox
+              value='X'
+              accessibilityLabel="Tarefa"
+              rounded="full"
+              bg="transparent"
+              borderColor="secondary.500"
+            />
+
+            <Text
+              color="white"
+              flexShrink={1}
+              numberOfLines={2}
+              ml={4}
+            >
+              Integer urna interdum massa libero auctor neque turpis turpis semper.
+            </Text>
+
+            <Button
+              bg="transparent"
+              _pressed={{ bg: 'gray.400' }}
+            >
+              <Icon
+                as={Feather}
+                name="trash-2"
+                color="gray.300"
+                w={16}
+                h={16}
+              />
+            </Button>
+          </HStack>
+        )}
         ListEmptyComponent={() => (
           <VStack alignItems="center" justifyContent="center" mt={12}>
             <Image source={ClipboardPng} alt="Todo" />
