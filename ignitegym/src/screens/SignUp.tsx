@@ -142,7 +142,7 @@ export function SignUp() {
           onPress={handleGoBack}
           title="Voltar para o login"
           variant="outline"
-          mt={24}
+          mt={12}
         />
       </VStack>
     </ScrollView>
