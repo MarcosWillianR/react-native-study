@@ -46,8 +46,19 @@ export function SignUp() {
     navigation.goBack();
   }, []);
 
-  const handleSignUp = useCallback((data: FormDataProps) => {
-    console.log(data);
+  const handleSignUp = useCallback(({ name, email, password }: FormDataProps) => {
+    try {
+      fetch('http://localhost:3333/users', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password })
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   return (
